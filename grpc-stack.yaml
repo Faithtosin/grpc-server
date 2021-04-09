@@ -14,13 +14,6 @@ Parameters:
     Type: Number
     Default: 50051
   
-  EcrAddress:
-    Type: String
-    Description: enter ecr address like XXXXXXX.dkr.ecr.us-east-1.amazonaws.com
-  
-  EcrName:
-    Type: String
-    Default: grpc-repo
 
   CertId:
     Type: String
@@ -41,11 +34,36 @@ Parameters:
     Description: client local Dns
     Default: frontend
 
+  GitHubOwner:
+    Type: String
+    AllowedPattern: '[A-Za-z0-9-]+'
+    Default: Faithtosin
+  ClientGitHubRepository:
+    Type: String
+    AllowedPattern: '[A-Za-z0-9-]+'
+    Default: grpc-client
+  ServerGitHubRepository:
+    Type: String
+    AllowedPattern: '[A-Za-z0-9-]+'
+    Default: grpc-server
+  GitHubBranch:
+    Type: String
+    Default: 'development'
+    AllowedValues:
+      - 'development'
+      - 'master'
+  
+  CodeConnectionId:
+    Type: String
+    Default: 213b0a75-f626-497c-97b4-f29b3984e86a
+
   ServerServiceEndpoint:
     Type: String
     Description: client local Dns
     Default: greeter_server
-
+  CodeBuildEnvironmentImage:
+    Type: String
+    Default: 'aws/codebuild/amazonlinux2-x86_64-standard:3.0'
   VPCid:
     Type: String 
     Default: vpc-059fa6c20ceedd1f6
@@ -66,24 +84,7 @@ Conditions:
     - !Ref ENV
     - development
 
-  GitHubOwner:
-    Type: String
-    AllowedPattern: '[A-Za-z0-9-]+'
-    Default: Faithtosin
-  ClientGitHubRepository:
-    Type: String
-    AllowedPattern: '[A-Za-z0-9-]+'
-    Default: grpc-client
-  ServerGitHubRepository:
-    Type: String
-    AllowedPattern: '[A-Za-z0-9-]+'
-    Default: grpc-server
-  GitHubBranch:
-    Type: String
-    Default: 'development'
-    AllowedValues:
-      - 'development'
-      - 'master'
+  
 
 Mappings:
   Cluster:
@@ -176,7 +177,7 @@ Resources:
               Protocol: tcp
               ContainerPort: !Ref ContainerPort
           Cpu: '100'
-          Image: !Sub '${EcrAddress}/${EcrName}:greeter_client'
+          Image: "docker/getting-started"
           Essential: true
           Environment:
             - Name: GREETER_ENDPOINT
@@ -243,8 +244,7 @@ Resources:
               Protocol: tcp
               ContainerPort: !Ref ContainerPort
           Cpu: '100'
-          Image: !Sub '${EcrAddress}/${EcrName}:greeter_server'
-          Essential: true
+          Image: "docker/getting-started"
         - Name: envoy
           User: "1337"
           HealthCheck:
@@ -900,7 +900,7 @@ Resources:
 
   ServerCodePipeline:
     Type: 'AWS::CodePipeline::Pipeline'
-    DependsOn: [ClientService,ECSCluster, ClientTaskDefinition, ClientCodeBuildProject,ClientCodePipelineArtifactStore ]
+    DependsOn: [ServerService,ECSCluster, ServerTaskDefinition, ServerCodeBuildProject,ServerCodePipelineArtifactStore ]
     Properties:
       Name: !Sub 'server-codepipeline-${AWS::StackName}'
       RoleArn: !GetAtt CodePipelineServiceRole.Arn

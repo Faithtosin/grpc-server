@@ -14,7 +14,7 @@ phases:
       - echo Build started on `date` ...
       - echo Building the Docker image...
       - echo $REPOSITORY_URI
-      - docker build  -t $REPOSITORY_URI:greeter_server .
+      - docker build  -t $REPOSITORY_URI:greeter_server greeter_server/.
       - docker tag $REPOSITORY_URI:greeter_server $REPOSITORY_URI:$IMAGE_TAG
   post_build:
     commands:
