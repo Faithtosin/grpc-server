@@ -1,0 +1,23 @@
+[
+  
+    {
+      "ParameterKey": "VPCid",
+      "ParameterValue": "vpc-xxxxxxx"
+    },
+    {
+      "ParameterKey": "SGIds",
+      "ParameterValue": "sg-xxxxxxxxxx"
+    },
+    {
+      "ParameterKey": "PubSubNetIds",
+      "ParameterValue": "subnet-xxxxxxxxx,subnet-xxxxxxxxxx,subnet-xxxxxxxx"
+    }, 
+    {
+        "ParameterKey": "EcrAddress",
+        "ParameterValue": "xxxxxxxxxxx.dkr.ecr.us-east-1.amazonaws.com"
+    },
+    {
+        "ParameterKey": "EcrName",
+        "ParameterValue": "grpc-repo"
+    }
+  ]
